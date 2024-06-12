@@ -45,25 +45,50 @@ const start = async () => {
     return;
   }
 
-  const orderRouter = express.Router();
+  // Reusable middleware for authentication and redirection
+  const authenticateAndRedirect =
+    (origin: string) =>
+    (
+      req: express.Request,
+      res: express.Response,
+      next: express.NextFunction
+    ) => {
+      const request = req as PayloadRequest;
+      if (!request.user) {
+        return res.redirect(`/sign-in?origin=${encodeURIComponent(origin)}`);
+      }
+      next();
+    };
 
-  orderRouter.use(payload.authenticate);
+  // Create reusable render function for routes
+  const renderPage =
+    (page: string) => (req: express.Request, res: express.Response) => {
+      const parsedUrl = parse(req.url, true);
+      const { query } = parsedUrl;
+      return nextApp.render(req, res, `/${page}`, query);
+    };
 
-  orderRouter.get("/", (req, res) => {
-    const request = req as PayloadRequest;
-
-    // if (!request.user) return res.redirect("/sign-in?origin=create-order");
-    if (!request.user) return res.redirect("/sign-in");
-
-    const parsedUrl = parse(req.url, true);
-    const { query } = parsedUrl;
-
-    return nextApp.render(req, res, "/create-order", query);
-  });
-  app.use("/create-order", orderRouter);
-  app.use("/analytics", orderRouter);
-  app.use("/verify-certificate", orderRouter);
-  app.use("/view-orders", orderRouter);
+  // Define the routes using the reusable middleware
+  app.use(
+    "/create-order",
+    authenticateAndRedirect("create-order"),
+    renderPage("create-order")
+  );
+  app.use(
+    "/analytics",
+    authenticateAndRedirect("analytics"),
+    renderPage("analytics")
+  );
+  app.use(
+    "/verify-certificate",
+    authenticateAndRedirect("verify-certificate"),
+    renderPage("verify-certificate")
+  );
+  app.use(
+    "/view-orders",
+    authenticateAndRedirect("view-orders"),
+    renderPage("view-orders")
+  );
 
   app.use(
     "/api/trpc",
