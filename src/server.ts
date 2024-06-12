@@ -44,51 +44,80 @@ const start = async () => {
 
     return;
   }
+  //order router
+  const orderRouter = express.Router();
 
-  // Reusable middleware for authentication and redirection
-  const authenticateAndRedirect =
-    (origin: string) =>
-    (
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction
-    ) => {
-      const request = req as PayloadRequest;
-      if (!request.user) {
-        return res.redirect(`/sign-in?origin=${encodeURIComponent(origin)}`);
-      }
-      next();
-    };
+  orderRouter.use(payload.authenticate);
 
-  // Create reusable render function for routes
-  const renderPage =
-    (page: string) => (req: express.Request, res: express.Response) => {
-      const parsedUrl = parse(req.url, true);
-      const { query } = parsedUrl;
-      return nextApp.render(req, res, `/${page}`, query);
-    };
+  orderRouter.get("/", (req, res) => {
+    const request = req as PayloadRequest;
 
-  // Define the routes using the reusable middleware
-  app.use(
-    "/create-order",
-    authenticateAndRedirect("create-order"),
-    renderPage("create-order")
-  );
-  app.use(
-    "/analytics",
-    authenticateAndRedirect("analytics"),
-    renderPage("analytics")
-  );
-  app.use(
-    "/verify-certificate",
-    authenticateAndRedirect("verify-certificate"),
-    renderPage("verify-certificate")
-  );
-  app.use(
-    "/view-orders",
-    authenticateAndRedirect("view-orders"),
-    renderPage("view-orders")
-  );
+    if (!request.user) return res.redirect("/sign-in?origin=create-order");
+
+    const parsedUrl = parse(req.url, true);
+    const { query } = parsedUrl;
+
+    return nextApp.render(req, res, "/create-order", query);
+  });
+  //order router
+
+  //analytics router
+
+  const analyticsRouter = express.Router();
+
+  analyticsRouter.use(payload.authenticate);
+
+  analyticsRouter.get("/", (req, res) => {
+    const request = req as PayloadRequest;
+
+    if (!request.user) return res.redirect("/sign-in?origin=analytics");
+
+    const parsedUrl = parse(req.url, true);
+    const { query } = parsedUrl;
+
+    return nextApp.render(req, res, "/analytics", query);
+  });
+  //analytics router
+  //verify-certificate router
+
+  const verifyCertificate = express.Router();
+
+  verifyCertificate.use(payload.authenticate);
+
+  verifyCertificate.get("/", (req, res) => {
+    const request = req as PayloadRequest;
+
+    if (!request.user)
+      return res.redirect("/sign-in?origin=verify-certificate");
+
+    const parsedUrl = parse(req.url, true);
+    const { query } = parsedUrl;
+
+    return nextApp.render(req, res, "/verify-certificate", query);
+  });
+  //verify-certificate router
+
+  //view-orders router
+
+  const viewOrders = express.Router();
+
+  viewOrders.use(payload.authenticate);
+
+  viewOrders.get("/", (req, res) => {
+    const request = req as PayloadRequest;
+
+    if (!request.user) return res.redirect("/sign-in?origin=view-orders");
+
+    const parsedUrl = parse(req.url, true);
+    const { query } = parsedUrl;
+
+    return nextApp.render(req, res, "/verify-certificate", query);
+  });
+  //view-orders router
+  app.use("/create-order", orderRouter);
+  app.use("/analytics", analyticsRouter);
+  app.use("/verify-certificate", verifyCertificate);
+  app.use("/view-orders", viewOrders);
 
   app.use(
     "/api/trpc",
