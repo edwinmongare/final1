@@ -111,7 +111,7 @@ const start = async () => {
     const parsedUrl = parse(req.url, true);
     const { query } = parsedUrl;
 
-    return nextApp.render(req, res, "/verify-certificate", query);
+    return nextApp.render(req, res, "/view-orders", query);
   });
   //view-orders router
   app.use("/create-order", orderRouter);
