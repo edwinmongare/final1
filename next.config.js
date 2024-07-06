@@ -8,7 +8,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "https://final-pacesetter-app.payloadcms.app",
+        hostname: "https://final-pacesetter-1d5a034.payloadcms.app",
       },
     ],
   },
