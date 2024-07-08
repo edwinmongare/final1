@@ -44,80 +44,74 @@ const start = async () => {
 
     return;
   }
-  //order routers
-  const orderRouter = express.Router();
 
-  orderRouter.use(payload.authenticate);
+  // Middleware to authenticate requests
+  app.use((req, res, next) => {
+    payload.authenticate(req, res, (err) => {
+      if (err) return res.status(401).send("Authentication failed");
+      next();
+    });
+  });
 
-  orderRouter.get("/", (req, res) => {
+  // Example route for create-order
+  app.get("/create-order", (req, res) => {
     const request = req as PayloadRequest;
 
-    if (!request.user) return res.redirect("/sign-in?origin=create-order");
+    // Ensure user is authenticated
+    if (!request.user) {
+      return res.redirect("/sign-in");
+    }
 
     const parsedUrl = parse(req.url, true);
     const { query } = parsedUrl;
 
     return nextApp.render(req, res, "/create-order", query);
   });
-  //order router
 
-  //analytics router
-
-  const analyticsRouter = express.Router();
-
-  analyticsRouter.use(payload.authenticate);
-
-  analyticsRouter.get("/", (req, res) => {
+  // Example route for analytics
+  app.get("/analytics", (req, res) => {
     const request = req as PayloadRequest;
 
-    if (!request.user) return res.redirect("/sign-in?origin=analytics");
+    // Ensure user is authenticated
+    if (!request.user) {
+      return res.redirect("/sign-in");
+    }
 
     const parsedUrl = parse(req.url, true);
     const { query } = parsedUrl;
 
     return nextApp.render(req, res, "/analytics", query);
   });
-  //analytics router
-  //verify-certificate router
 
-  const verifyCertificate = express.Router();
-
-  verifyCertificate.use(payload.authenticate);
-
-  verifyCertificate.get("/", (req, res) => {
+  // Example route for verify-certificate
+  app.get("/verify-certificate", (req, res) => {
     const request = req as PayloadRequest;
 
-    if (!request.user)
-      return res.redirect("/sign-in?origin=verify-certificate");
+    // Ensure user is authenticated
+    if (!request.user) {
+      return res.redirect("/sign-in");
+    }
 
     const parsedUrl = parse(req.url, true);
     const { query } = parsedUrl;
 
     return nextApp.render(req, res, "/verify-certificate", query);
   });
-  //verify-certificate router
 
-  //view-orders router
-
-  const viewOrders = express.Router();
-
-  viewOrders.use(payload.authenticate);
-
-  viewOrders.get("/", (req, res) => {
+  // Example route for view-orders
+  app.get("/view-orders", (req, res) => {
     const request = req as PayloadRequest;
 
-    if (!request.user) return res.redirect("/sign-in?origin=view-orders");
+    // Ensure user is authenticated
+    if (!request.user) {
+      return res.redirect("/sign-in");
+    }
 
     const parsedUrl = parse(req.url, true);
     const { query } = parsedUrl;
 
     return nextApp.render(req, res, "/view-orders", query);
   });
-  //view-orders router
-  app.use("/create-order", orderRouter);
-  app.use("/analytics", analyticsRouter);
-  app.use("/verify-certificate", verifyCertificate);
-  app.use("/view-orders", viewOrders);
 
   app.use(
     "/api/trpc",

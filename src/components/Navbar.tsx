@@ -42,7 +42,16 @@ const Navbar = async () => {
                   {user ? null : (
                     <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
                   )}
-
+                  {user && (
+                    <Link
+                      href="/verify-certificate"
+                      className={buttonVariants({
+                        variant: "ghost",
+                      })}
+                    >
+                      Verify Certificate
+                    </Link>
+                  )}
                   {user && user.role === "superadmin" && (
                     <>
                       <Link
@@ -52,18 +61,6 @@ const Navbar = async () => {
                         })}
                       >
                         Dashboard
-                      </Link>
-                      <span
-                        className="h-6 w-px bg-gray-200"
-                        aria-hidden="true"
-                      />
-                      <Link
-                        href="/verify-certificate"
-                        className={buttonVariants({
-                          variant: "ghost",
-                        })}
-                      >
-                        Verify Certificate
                       </Link>
                       <span
                         className="h-6 w-px bg-gray-200"
