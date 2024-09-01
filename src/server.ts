@@ -98,7 +98,7 @@ const start = async () => {
     return nextApp.render(req, res, "/verify-certificate", query);
   });
 
-  // Example route for view-orders
+  // Example route for view-orderst
   app.get("/view-orders", (req, res) => {
     const request = req as PayloadRequest;
 
