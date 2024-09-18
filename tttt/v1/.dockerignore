@@ -1,0 +1,46 @@
+# Ignore node_modules and other build directories
+node_modules
+.next
+out
+dist
+
+# Ignore local development environment files
+#.env
+#.env.local
+#.env.*.local
+
+# Ignore logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore lockfiles if not needed
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Ignore Docker files
+Dockerfile
+Dockerfile.*
+
+# Ignore Git-related files
+.git
+.gitignore
+
+# Ignore temporary files and IDE-related files
+*.swp
+*~
+*.sublime-project
+*.sublime-workspace
+.vscode
+.idea
+.DS_Store
+
+# Ignore other files (like test and coverage reports)
+coverage
+__tests__
+__mocks__
+jest.config.js
+*.test.js
