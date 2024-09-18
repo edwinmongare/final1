@@ -110,5 +110,9 @@
     "@eslint/config-array": "^0.18.0",
     "@swc-node/register": "^1.10.9",
     "jsdom": "^25.0.0"
-  }
+  },
+  "overrides": {
+  "sharp": "0.23.2"  
+}
+
 }
